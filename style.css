@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(2, 48, 2);
+}
+
+#wrapper {
+    margin: 0 auto;
+}
+
+#game {
+    background: transparent url('blackjack1.jpeg') 0 0 no-repeat;
+    border-radius: 5px;
+    color: #333;
+    background-position: center;
+    height: 100vh;
+}
