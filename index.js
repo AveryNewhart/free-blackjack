@@ -90,7 +90,60 @@
 
     function Deck() {
         var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
-            suits = []
+            suits = ['&#9824', '&#9827', '&$9829', '&$9670'],
+            deck = [],
+            i, x, card;
+
+        this.getDeck = function(){
+            return this.setDeck();
+        }
+
+        this.setDeck = function(){
+            for(i = 0; i <ranks.length; i++){
+                for(x = 0; x < suits.length; x++){
+                    card = new Card({'rank:': ranks[i]})
+
+                    deck.push({
+                        'rank' : ranks[i],
+                        'suit': suits[x],
+                        'value' : card.getValue()
+                    })
+                }
+            }
+
+            return deck;
+        }
+    }
+
+    function Card(card){
+        this.getBank = function(){
+            return card.rank;
+        }
+
+        this.getSuit = function() {
+            return card.suit;
+        }
+
+        this.getValue = function() {
+            var rank = this.getRank(),
+                value = 0;
+
+            if(rank === 'A'){
+                value = 11;
+            }else if(rank === 'K'){
+                value = 10;
+            }else if(rank === 'Q'){
+                value = 10;
+            }else if(rank === 'J'){
+                value = 10;
+            }else{
+                value = parseInt(rank, 0);
+            }
+
+            return value;
+        }
+
+
     }
 
     function Game(){
