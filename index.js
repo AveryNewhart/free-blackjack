@@ -162,8 +162,72 @@
 
             return value;
         }
+    }
 
+    function Deal(){
+        var deck = new Deck(),
+            shuffle = new Shuffle(deck),
+            shuffled = shuffle.getShuffle(),
+            card;
 
+        this.getCard = function(sender) {
+            this.setCard(sender);
+            return card;
+        }
+
+        this.setCard = function(sender) {
+            card = shuffled[0];
+            shuffled.splice(card, 1);
+            sender.setHand(card);
+        }
+
+        this.dealCard = function(num, i, obj){
+            if(i >= num) {return false;}
+
+            var sender = obj[i],
+                elements = obj[i].getElements(),
+                score = elements.score,
+                ele = elements.ele,
+                dhand = dealer.getHand();
+
+            deal.getCard(sender);
+
+            if(i < 3){
+                renderCard(ele, sender, 'up');
+                $(score).html(sender.getScore());
+            }else{
+                renderCard(ele, sender, 'down');
+            }
+
+            if(player.getHand().length < 3){
+                if(dhand.length > 0 && dhand[0].rank === 'A'){
+                    setActions('insurance');
+                }
+
+                if(player.getScore() === 21){
+                    if(!blackjack){
+                        blackjack = true;
+                        getWinner();
+                    }else{
+                        dealer.flipCard();
+                        $('#dscore span').html(dealer.getScore());
+                    }
+                } else {
+                    if(dhand.length > 1){
+                        setActions('run');
+                    }
+                }
+            }
+
+            function showCards(){
+                setTimeout(function(){
+                    deal.dealCard(num, i + 1, obj);
+                }, 500);
+            }
+
+            clearTimeout(showCards());
+
+        }
     }
 
     function Game(){
