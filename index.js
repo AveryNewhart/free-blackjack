@@ -1,6 +1,13 @@
 (function () {
 
-    var game = new Game();
+    var game = new Game(),
+        player = new Player(),
+        dealer = new Player(),
+        running = false,
+        blackjack = false,
+        insured = 0,
+        deal;
+
 
 
     function Player(){
@@ -57,6 +64,33 @@
             cash += money;
             this.updateBoard();
         }
+
+        this.getBank = function(){
+            $('#bank').html('Winnings : $' + bank.formatMoney(2, '.', ','));
+            if(bank < 0){
+                $('#bank').html(`Winnings : <span>-$${bank.formatMoney(2, '.', ',').
+                toString().replace('-')}</span>`);
+            }
+        }
+
+        this.setBank = function(money) {
+            bank += money;
+            this.updateBoard();
+        }
+
+        this.flipCard = function(){
+            $('.down').each(function(){
+                $(this).removeClass('down').addClass('up');
+                renderCard(false, false, false, $(this));
+            })
+
+            $('#dcard-0 . popover-content').html(dealer.getScore());
+        }
+    }
+
+    function Deck() {
+        var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
+            suits = []
     }
 
     function Game(){
