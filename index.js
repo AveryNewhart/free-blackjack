@@ -115,6 +115,26 @@
         }
     }
 
+    function Shuffle(deck) {
+        var set = deck.getDeck(),
+            shuffled = [],
+            card;
+
+        this.setShuffle = function(){
+            while(set.length > 0){
+                card = Math.floor(Math.random() * set.length);
+
+                shuffled.push(set[card])
+                set.splice(card, 1);
+            }
+            return shuffled;
+        };
+
+        this.getShuffle = function() {
+            return this.setShuffle();
+        }
+    }
+
     function Card(card){
         this.getBank = function(){
             return card.rank;
