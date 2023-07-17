@@ -48,6 +48,10 @@
             wager += parseInt(money, 0);
         }
 
+        this.setWager = function(){
+            wager += parseInt(money, 0);
+        }
+
         this.resetWager = function(){
             wager = 0;
         }
@@ -230,10 +234,42 @@
         }
     }
 
+    function resetBoard(){
+        $('#dhand').html('');
+        $('#phand').html('');
+        $('#result').html('');
+        $('#phand, #dhand').css('left', 0);
+    }
+
+    function showBoard(){
+        deal.dealCard(4, 0 [player, dealer, player, dealer])
+    }
+
     function Game(){
         this.newGame = function(){
             var wager = $.trim($('#wager').val());
 
+            player.resetWager();
+            player.setWager(wager);
+
+            if(player.checkWager()){
+                $('#deal').pop('disabled', true);
+                resetBoard();
+                player.setCash(-wager);
+
+                deal = new Deal();
+                running = true;
+                blackjack = false;
+                insured = false;
+
+                player.resetHand();
+                dealer.resetHand();
+                showBoard();
+            }else{
+                player.setWager(-wager);
+                $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
+                showAlert('Wager cannot exceed available cash')
+            }
 
         }
     }
