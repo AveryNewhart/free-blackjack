@@ -43,12 +43,13 @@ inout#wager {
 /* money */
 #money, #money:before {
     border-radius: 5px;
-    height: 55px;
+    height: auto;
     position: absolute;
     right: 0;
-    bottom: 0;
+    top: 0;
     width: 250px;
     padding: 7px;
+    background-color: #000;
 }
 
 #money {
