@@ -245,6 +245,42 @@
         deal.dealCard(4, 0 [player, dealer, player, dealer])
     }
 
+    function showAlert(msg){
+        $('#alert span').html(`<strong>${msg}</strong`)
+        $('#alert').fadeIn();
+    }
+
+    function setActions(opts){
+        var hand = player.getHand();
+
+        if(!running){
+            $('#deal').prop('disabled', false);
+            $('#hit').prop('disabled', true);
+            $('#stand').prop('disabled', true);
+            $('#double').prop('disabled', true);
+            $('#split').prop('disabled', true);
+            $('#insurance').prop('disabled', true);
+        }
+
+        if(opts === 'run'){
+            $('#deal').prop('disabled', true);
+            $('#hit').prop('disabled', false);
+            $('#stand').prop('disabled', false);
+
+            if(player.checkWager(wager * 2)){
+                $('#double').prop('disabled', false);
+            }
+        }else if (opts === 'split'){
+            $('#split').prop('disabled', false);
+        }else if (opts === 'insurance'){
+            $('#insurance').prop('disabled', false);
+        }else if (hand.length > 2){
+            $('#double').prop('disabled', true);
+            $('#split').prop('disabled', true);
+            $('#insurance').prop('disabled', true);
+        }
+    }
+
     function Game(){
         this.newGame = function(){
             var wager = $.trim($('#wager').val());
