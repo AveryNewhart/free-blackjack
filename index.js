@@ -310,5 +310,45 @@
         }
     }
 
+    function renderCard(ele, sender, type, item){
+        var hand, i, card;
+
+        if(!item){
+            hand = sender.getHand();
+            i = hand.length - 1;
+            card = new Card(hand[i]);
+        }else {
+            hand = dealer.getHand();
+            card = new Card(hand[1])
+        }
+
+        var rank = card.getRank(),
+            suit = card.getSuit(),
+            color = 'red',
+            posx = 402,
+            posy = 182
+            speed = 200,
+            cards = ele + ' .card=' + i;
+
+        if(i > 0){
+            posx -= 50 * i;
+        }
+
+        if(!item){
+            $(ele).append(
+                `<div class='card-${i} ${type}'>
+                    <span class='pos-0'>
+                        <span class='rank'>&nbsp;</span>
+                        <span class='suit'>&nbsp;</span>
+                    </span>
+                    <span class='pos-1'>
+                        <span class='rank'>&nbsp;</span>
+                        <span class='suit'>&nbsp;</span>
+                    </span>
+                </div>`
+            )
+        }
+    }
+
 
 });
