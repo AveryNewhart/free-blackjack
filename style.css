@@ -1,27 +1,110 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+div[id*="pcard"] .popover { left: -95px !important; }
+div[id*="dcard"] .popover { left: -105px !important; }
 
 body {
-    background-color: rgb(2, 48, 2);
+    background: rgb(2, 48, 2);
 }
 
 #wrapper {
-    margin: 0 auto;
+	margin: 0 auto;
+	max-width: 1000px;
+}
+
+h3 {
+	margin: 5px 0;
+	text-align: center;
 }
 
 #game {
-    background: transparent url('blackjackImage.jpeg') 0 0 no-repeat;
-    border-radius: 5px;
-    color: #333;
-    background-position: center;
-    background-size: cover;
-    height: 100vh;
+	border-radius: 5px;
+	color: #333;
+	font: 14px/17px Helvetica, Arial, Verdana, sans-serif;
+	height: 100vh;
     width: 100%;
-    position: relative;
-    font: 14px/17px Helvetica, Arial, Verdana, sans-serif;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+	position: relative;
+	 
+}
+
+ 
+
+div#dscore {
+	position: absolute;
+	top: 10px;
+}
+
+div#pscore {
+	position: absolute;
+	bottom: 15px;
+}
+
+div#phand, div#dhand {
+	font-weight: 700;
+	/*left: 50%;*/
+	position: absolute;
+	top: -50px;
+	white-space: nowrap;
+	width: 1000px;
+}
+
+div#phand { }
+
+div#dhand { }
+
+div[class*="card"] {
+	background: #FFF;
+	border: 6px solid #FFF;
+	border-radius: 5px;
+	box-shadow: 0 0 1px #000;
+	display: inline-block;
+	height: 106px;
+	margin: 0 5px;
+	position: absolute;
+	right: 0;
+	width: 79px;
+}
+
+.down {
+	background: #B20000 url('https://www.clowerweb.com/cors/blackjack/card.png') center center no-repeat !important;
+}
+
+span.pos-0 {
+	left: 0;
+	position: absolute;
+	top: 0;
+}
+
+span.pos-1 {
+	bottom: 0;
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+	position: absolute;
+	right: 0;
+	transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+}
+
+span.rank {
+	font-size: 18px;
+}
+
+span.suit {
+	font-size: 22px;
+}
+
+.black {
+	color: #000;
+}
+
+.red {
+	color: #F00;
+}
+
+#result {
+	position: absolute;
+	bottom: 0;
 }
 
 #actions {
@@ -29,45 +112,49 @@ body {
     bottom: 0;
     left: 5%;
     text-align: center;
-    padding: 1rem;
+    padding: 1rem 1rem;
     margin-bottom: 1rem;
     background-color: #000;
 }
 
-inout#wager {
-    margin-left: 5px;
-    position: relative;
-    top: 4px;
-}
+input#wager { margin-left: 5px; position: relative; top: 4px }
 
-/* money */
 #money, #money:before {
-    border-radius: 5px;
-    height: auto;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 250px;
-    padding: 7px;
-    background-color: #000;
+	border-radius: 5px;
+	top: 0;
+	height: 100px;
+	padding: 7px;
+	position: absolute;
+	right: 0;
+	width: 250px;
+    background-color: rgb(2, 48, 2);
 }
 
 #money {
-    border: 2px solid #FFC926;
+	border: 2px solid #FFC926;
 }
 
 #money:before {
-    background: #333;
-    content: '';
-    opacity: .8;
-
+	background: #333;
+	content: '';
+	opacity: 0.8;
 }
 
-#cash, #bank {
-    color: #FFF;
-    margin: 12px 0;
-    font: 700 18px /20px Helvetica, Arial, Verdana, sans-serif;
-    z-index: 1;
-    position: relative;
-    text-shadow: 1px 1px #000;
+	#cash, #bank {
+		color: #FFF;
+		font: 700 18px/20px Helvetica, Arial, Verdana, sans-serif;
+		margin: 12px 0;
+		position: relative;
+		text-shadow: 1px 1px #000;
+		z-index: 1;
+	}
+
+#alert {
+	margin: 0 auto;
+	opacity: 0.95;
+	position: relative;
+	text-align: center;
+	top: 34.5%;
+	width: 500px;
+	z-index: 10;
 }
