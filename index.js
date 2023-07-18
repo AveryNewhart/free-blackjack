@@ -1,88 +1,99 @@
 (function () {
+    // Game variables
+    var game = new Game(),
+        player = new Player(),
+        dealer = new Player(),
+        running = false,
+        blackjack = false,
+        insured = 0,
+        deal;
 
-  
-    var game      = new Game(),
-            player    = new Player(),
-            dealer    = new Player(),
-            running   = false,
-            blackjack = false,
-            insured   = 0,
-            deal;
-
-
+    // Player constructor
     function Player() {
-        var hand  = [],
-                wager = 0,
-                cash  = 1000,
-                bank  = 0,
-                ele   = '',
-                score = '';
+        var hand = [],
+            wager = 0,
+            cash = 1000,
+            bank = 0,
+            ele = '',
+            score = '';
 
-        this.getElements = function() {
-            if(this === player) {
-                ele   = '#phand';
+        // Get HTML elements for player or dealer
+        this.getElements = function () {
+            if (this === player) {
+                ele = '#phand';
                 score = '#pcard-0 .popover-content';
             } else {
-                ele   = '#dhand';
+                ele = '#dhand';
                 score = '#dcard-0 .popover-content';
             }
-
-            return {'ele': ele, 'score': score};
+            return { 'ele': ele, 'score': score };
         };
 
-        this.getHand = function() {
+        // Get player's hand
+        this.getHand = function () {
             return hand;
         };
 
-        this.setHand = function(card) {
+        // Set a card to player's hand
+        this.setHand = function (card) {
             hand.push(card);
         };
 
-        this.resetHand = function() {
+        // Reset player's hand
+        this.resetHand = function () {
             hand = [];
         };
 
-        this.getWager = function() {
+        // Get player's wager
+        this.getWager = function () {
             return wager;
         };
 
-        this.setWager = function(money) {
+        // Set player's wager
+        this.setWager = function (money) {
             wager += parseInt(money, 0);
         };
 
-        this.resetWager = function() {
+        // Reset player's wager
+        this.resetWager = function () {
             wager = 0;
         };
 
-        this.checkWager = function() {
+        // Check if player's wager is valid
+        this.checkWager = function () {
             return wager <= cash ? true : false;
         };
 
-        this.getCash = function() {
+        // Get player's cash
+        this.getCash = function () {
             return cash.formatMoney(2, '.', ',');
         };
 
-        this.setCash = function(money) {
+        // Set player's cash
+        this.setCash = function (money) {
             cash += money;
             this.updateBoard();
         };
 
-        this.getBank = function() {
+        // Get player's bank (winnings)
+        this.getBank = function () {
             $('#bank').html('Winnings: $' + bank.formatMoney(2, '.', ','));
 
-            if(bank < 0) {
-                $('#bank').html('Winnings: <span style="color: #D90000">-$' + 
-                bank.formatMoney(2, '.', ',').toString().replace('-', '') + '</span>');
+            if (bank < 0) {
+                $('#bank').html('Winnings: <span style="color: #D90000">-$' +
+                    bank.formatMoney(2, '.', ',').toString().replace('-', '') + '</span>');
             }
         };
 
-        this.setBank = function(money) {
+        // Set player's bank (winnings)
+        this.setBank = function (money) {
             bank += money;
             this.updateBoard();
         };
 
-        this.flipCards = function() {
-            $('.down').each(function() {
+        // Flip dealer's facedown cards
+        this.flipCards = function () {
+            $('.down').each(function () {
                 $(this).removeClass('down').addClass('up');
                 renderCard(false, false, false, $(this));
             });
@@ -91,24 +102,27 @@
         };
     }
 
+    // Deck constructor
     function Deck() {
         var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
-                suits = ['&#9824;', '&#9827;', '&#9829;', '&#9670;'],
-                deck  = [],
-                i, x, card;
+            suits = ['&#9824;', '&#9827;', '&#9829;', '&#9670;'],
+            deck = [],
+            i, x, card;
 
-        this.getDeck = function() {
+        // Get the deck of cards
+        this.getDeck = function () {
             return this.setDeck();
         };
 
-        this.setDeck = function() {
-            for(i = 0; i < ranks.length; i++) {
-                for(x = 0; x < suits.length; x++) {
-                    card = new Card({'rank': ranks[i]});
+        // Set the deck of cards
+        this.setDeck = function () {
+            for (i = 0; i < ranks.length; i++) {
+                for (x = 0; x < suits.length; x++) {
+                    card = new Card({ 'rank': ranks[i] });
 
                     deck.push({
-                        'rank' : ranks[i],
-                        'suit' : suits[x],
+                        'rank': ranks[i],
+                        'suit': suits[x],
                         'value': card.getValue()
                     });
                 }
@@ -118,13 +132,15 @@
         };
     }
 
+    // Shuffle constructor
     function Shuffle(deck) {
-        var set      = deck.getDeck(),
-                shuffled = [],
-                card;
+        var set = deck.getDeck(),
+            shuffled = [],
+            card;
 
-        this.setShuffle = function() {
-            while(set.length > 0) {
+        // Set the shuffled deck of cards
+        this.setShuffle = function () {
+            while (set.length > 0) {
                 card = Math.floor(Math.random() * set.length);
 
                 shuffled.push(set[card]);
@@ -134,31 +150,36 @@
             return shuffled;
         };
 
-        this.getShuffle = function() {	
+        // Get the shuffled deck of cards
+        this.getShuffle = function () {
             return this.setShuffle();
         };
     }
 
+    // Card constructor
     function Card(card) {
-        this.getRank = function() {
+        // Get the rank of the card
+        this.getRank = function () {
             return card.rank;
         };
 
-        this.getSuit = function() {
+        // Get the suit of the card
+        this.getSuit = function () {
             return card.suit;
         };
 
-        this.getValue = function() {
-            var rank  = this.getRank(),
-                  value = 0;
+        // Get the value of the card
+        this.getValue = function () {
+            var rank = this.getRank(),
+                value = 0;
 
-            if(rank === 'A') {
+            if (rank === 'A') {
                 value = 11;
-            } else if(rank === 'K') {
+            } else if (rank === 'K') {
                 value = 10;
-            } else if(rank === 'Q') {
+            } else if (rank === 'Q') {
                 value = 10;
-            } else if(rank === 'J') {
+            } else if (rank === 'J') {
                 value = 10;
             } else {
                 value = parseInt(rank, 0);
@@ -168,48 +189,52 @@
         };
     }
 
+    // Deal constructor
     function Deal() {
-        var deck     = new Deck(),
-                shuffle  = new Shuffle(deck),
-                shuffled = shuffle.getShuffle(),
-                card;
+        var deck = new Deck(),
+            shuffle = new Shuffle(deck),
+            shuffled = shuffle.getShuffle(),
+            card;
 
-        this.getCard = function(sender) {
+        // Get a card from the shuffled deck
+        this.getCard = function (sender) {
             this.setCard(sender);
             return card;
         };
 
-        this.setCard = function(sender) {
+        // Set a card to the player's or dealer's hand
+        this.setCard = function (sender) {
             card = shuffled[0];
             shuffled.splice(card, 1);
             sender.setHand(card);
         };
 
-        this.dealCard = function(num, i, obj) {
-            if(i >= num) { return false; }
+        // Deal cards to players and dealer
+        this.dealCard = function (num, i, obj) {
+            if (i >= num) { return false; }
 
-            var sender   = obj[i],
-                    elements = obj[i].getElements(),
-                    score    = elements.score,
-                    ele      = elements.ele,
-                    dhand    = dealer.getHand();
+            var sender = obj[i],
+                elements = obj[i].getElements(),
+                score = elements.score,
+                ele = elements.ele,
+                dhand = dealer.getHand();
 
             deal.getCard(sender);
 
-            if(i < 3) {
+            if (i < 3) {
                 renderCard(ele, sender, 'up');
                 $(score).html(sender.getScore());
             } else {
                 renderCard(ele, sender, 'down');
             }
 
-            if(player.getHand().length < 3) {
-                if(dhand.length > 0 && dhand[0].rank === 'A') {
+            if (player.getHand().length < 3) {
+                if (dhand.length > 0 && dhand[0].rank === 'A') {
                     setActions('insurance');
                 }
 
-                if(player.getScore() === 21) {
-                    if(!blackjack) {
+                if (player.getScore() === 21) {
+                    if (!blackjack) {
                         blackjack = true;
                         getWinner();
                     } else {
@@ -217,14 +242,14 @@
                         $('#dscore span').html(dealer.getScore());
                     }
                 } else {
-                    if(dhand.length > 1) {
+                    if (dhand.length > 1) {
                         setActions('run');
                     }
                 }
             }
 
             function showCards() {
-                setTimeout(function() {
+                setTimeout(function () {
                     deal.dealCard(num, i + 1, obj);
                 }, 500);
             }
@@ -233,22 +258,24 @@
         };
     }
 
+    // Game constructor
     function Game() {
-        this.newGame = function() {
+        // Start a new game
+        this.newGame = function () {
             var wager = $.trim($('#wager').val());
 
             player.resetWager();
             player.setWager(wager);
 
-            if(player.checkWager()) {
+            if (player.checkWager()) {
                 $('#deal').prop('disabled', true);
                 resetBoard();
                 player.setCash(-wager);
 
-                deal      = new Deal();
-                running   = true;
+                deal = new Deal();
+                running = true;
                 blackjack = false;
-                insured   = false;
+                insured = false;
 
                 player.resetHand();
                 dealer.resetHand();
@@ -261,20 +288,21 @@
         };
     }
 
-/*****************************************************************/
-/************************* Extensions ****************************/
-/*****************************************************************/
+    /*****************************************************************/
+    /************************* Extensions ****************************/
+    /*****************************************************************/
 
-    Player.prototype.hit = function(dbl) {
+    // Prototype functions for Player
+    Player.prototype.hit = function (dbl) {
         var pscore;
 
         deal.dealCard(1, 0, [this]);
         pscore = player.getScore();
 
-        if(dbl || pscore > 21) {
+        if (dbl || pscore > 21) {
             running = false;
 
-            setTimeout(function() {
+            setTimeout(function () {
                 player.stand();
             }, 500);
         } else {
@@ -286,22 +314,22 @@
         player.updateBoard();
     };
 
-    Player.prototype.stand = function() {
+    Player.prototype.stand = function () {
         var timeout = 0;
 
-    running = false;
+        running = false;
         dealer.flipCards();
 
         function checkDScore() {
-            if(dealer.getScore() < 17 && player.getScore() <= 21) {
+            if (dealer.getScore() < 17 && player.getScore() <= 21) {
                 timeout += 200;
 
-                setTimeout(function() {
+                setTimeout(function () {
                     dealer.hit();
                     checkDScore();
                 }, 500);
             } else {
-                setTimeout(function() {
+                setTimeout(function () {
                     getWinner();
                 }, timeout);
             }
@@ -310,14 +338,14 @@
         checkDScore();
     };
 
-    Player.prototype.dbl = function() {
+    Player.prototype.dbl = function () {
         var wager = this.getWager();
 
-        if(this.checkWager(wager * 2)) {
+        if (this.checkWager(wager * 2)) {
             $('#double').prop('disabled', true);
             this.setWager(wager);
             this.setCash(-wager);
-            
+
             this.hit(true);
         } else {
             $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
@@ -325,19 +353,19 @@
         }
     };
 
-    Player.prototype.split = function() {
+    Player.prototype.split = function () {
         $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
         showAlert('Split function is not yet working.');
     };
 
-    Player.prototype.insure = function() {
-        var wager    = this.getWager() / 2,
-              newWager = 0;
+    Player.prototype.insure = function () {
+        var wager = this.getWager() / 2,
+            newWager = 0;
 
         $('#insurance').prop('disabled', true);
         this.setWager(wager);
 
-        if(this.checkWager()) {
+        if (this.checkWager()) {
             newWager -= wager;
             this.setCash(newWager);
             insured = wager;
@@ -348,18 +376,18 @@
         }
     };
 
-    Player.prototype.getScore = function() {
-        var hand  = this.getHand(),
-                score = 0,
-                aces  = 0,
-                i;
+    Player.prototype.getScore = function () {
+        var hand = this.getHand(),
+            score = 0,
+            aces = 0,
+            i;
 
-        for(i = 0; i < hand.length; i++) {
+        for (i = 0; i < hand.length; i++) {
             score += hand[i].value;
 
-            if(hand[i].value === 11) { aces += 1; }
+            if (hand[i].value === 11) { aces += 1; }
 
-            if(score > 21 && aces > 0) {
+            if (score > 21 && aces > 0) {
                 score -= 10;
                 aces--;
             }
@@ -368,10 +396,10 @@
         return score;
     };
 
-    Player.prototype.updateBoard = function() {
+    Player.prototype.updateBoard = function () {
         var score = '#dcard-0 .popover-content';
 
-        if(this === player) {
+        if (this === player) {
             score = '#pcard-0 .popover-content';
         }
 
@@ -380,34 +408,37 @@
         player.getBank();
     };
 
-    Number.prototype.formatMoney = function(c, d, t) {
-        var n = this, 
+    // Format number as money
+    Number.prototype.formatMoney = function (c, d, t) {
+        var n = this,
             s = n < 0 ? '-' : '',
             i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + '',
             j = i.length;
-            j = j > 3 ? j % 3 : 0;
-       return s + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
-     };
-
-/*****************************************************************/
-/************************** Functions ****************************/
-/*****************************************************************/
-
-    (function($) {
-    $.fn.disableSelection = function() {
-      return this.attr('unselectable', 'on')
-                 .css('user-select', 'none')
-                 .on('selectstart', false);
+        j = j > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
     };
+
+    /*****************************************************************/
+    /************************** Functions ****************************/
+    /*****************************************************************/
+
+    // Disable text selection for certain elements
+    (function ($) {
+        $.fn.disableSelection = function () {
+            return this.attr('unselectable', 'on')
+                .css('user-select', 'none')
+                .on('selectstart', false);
+        };
     }(jQuery));
 
-    (function($) {
-        $.fn.numOnly = function() {
-            this.on('keydown', function(e) {
-                if(e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 27 || e.keyCode === 13 || (e.keyCode === 65 && e.ctrlKey === true) || (e.keyCode >= 35 && e.keyCode <= 39)) {
+    // Allow only numbers in input fields
+    (function ($) {
+        $.fn.numOnly = function () {
+            this.on('keydown', function (e) {
+                if (e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 27 || e.keyCode === 13 || (e.keyCode === 65 && e.ctrlKey === true) || (e.keyCode >= 35 && e.keyCode <= 39)) {
                     return true;
                 } else {
-                    if(e.shifKey || ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105))) {
+                    if (e.shifKey || ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105))) {
                         e.preventDefault();
                     }
                 }
@@ -415,90 +446,94 @@
         };
     }(jQuery));
 
+    // Show an alert message
     function showAlert(msg) {
         $('#alert span').html('<strong>' + msg + '</strong>');
         $('#alert').fadeIn();
     }
 
+    // Set available actions based on game state
     function setActions(opts) {
         var hand = player.getHand();
 
-        if(!running) {
-            $('#deal')  .prop('disabled', false);
-            $('#hit')   .prop('disabled', true);
-            $('#stand') .prop('disabled', true);
+        if (!running) {
+            $('#deal').prop('disabled', false);
+            $('#hit').prop('disabled', true);
+            $('#stand').prop('disabled', true);
             $('#double').prop('disabled', true);
-            $('#split') .prop('disabled', true);
+            $('#split').prop('disabled', true);
             $('#insurance').prop('disabled', true);
         }
 
-        if(opts === 'run') {
-            $('#deal')  .prop('disabled', true);
-            $('#hit')   .prop('disabled', false);
-            $('#stand') .prop('disabled', false);
+        if (opts === 'run') {
+            $('#deal').prop('disabled', true);
+            $('#hit').prop('disabled', false);
+            $('#stand').prop('disabled', false);
 
-            if(player.checkWager(wager * 2)) {
+            if (player.checkWager(wager * 2)) {
                 $('#double').prop('disabled', false);
             }
-        } else if(opts === 'split') {
+        } else if (opts === 'split') {
             $('#split').prop('disabled', false);
-        } else if(opts === 'insurance') {
+        } else if (opts === 'insurance') {
             $('#insurance').prop('disabled', false);
-        } else if(hand.length > 2) {
-            $('#double')   .prop('disabled', true);
-            $('#split')    .prop('disabled', true);
+        } else if (hand.length > 2) {
+            $('#double').prop('disabled', true);
+            $('#split').prop('disabled', true);
             $('#insurance').prop('disabled', true);
         }
     }
 
+    // Show initial cards on the board
     function showBoard() {
         deal.dealCard(4, 0, [player, dealer, player, dealer]);
     }
 
+    // Render a card on the board
     function renderCard(ele, sender, type, item) {
         var hand, i, card;
 
-        if(!item) {
+        if (!item) {
             hand = sender.getHand();
-             i    = hand.length - 1;
-             card = new Card(hand[i]);
+            i = hand.length - 1;
+            card = new Card(hand[i]);
         } else {
-             hand = dealer.getHand();
-             card = new Card(hand[1]);
+            hand = dealer.getHand();
+            card = new Card(hand[1]);
         }
 
-        var	rank  = card.getRank(),
-                suit  = card.getSuit(),
-                color = 'red',
-                posx  = 402,
-                posy  = 182,
-                speed = 200,
-                cards = ele + ' .card-' + i;
+        var rank = card.getRank(),
+            suit = card.getSuit(),
+            color = 'red',
+            posx = 402,
+            posy = 182,
+            speed = 200,
+            cards = ele + ' .card-' + i;
 
-        if(i > 0) {
+        if (i > 0) {
             posx -= 50 * i;
         }
 
-        if(!item) {
+        if (!item) {
             $(ele).append(
-                '<div class="card-' + i + ' ' + type + '">' + 
-                    '<span class="pos-0">' +
-                        '<span class="rank">&nbsp;</span>' +
-                        '<span class="suit">&nbsp;</span>' +
-                    '</span>' +
-                    '<span class="pos-1">' +
-                        '<span class="rank">&nbsp;</span>' +
-                        '<span class="suit">&nbsp;</span>' +
-                    '</span>' +
+                '<div class="card-' + i + ' ' + type + '">' +
+                '<span class="pos-0">' +
+                '<span class="rank">&nbsp;</span>' +
+                '<span class="suit">&nbsp;</span>' +
+                '</span>' +
+                '<span class="pos-1">' +
+                '<span class="rank">&nbsp;</span>' +
+                '<span class="suit">&nbsp;</span>' +
+                '</span>' +
                 '</div>'
             );
 
-            if(ele === '#phand') {
-                posy  = 360;
+            if (ele === '#phand') {
+                posy = 360;
                 speed = 500;
                 $(ele + ' div.card-' + i).attr('id', 'pcard-' + i);
 
-                if(hand.length < 2) {
+                if (hand.length < 2) {
                     $('#pcard-0').popover({
                         animation: false,
                         container: '#pcard-0',
@@ -508,7 +543,7 @@
                         trigger: 'manual'
                     });
 
-                    setTimeout(function() {
+                    setTimeout(function () {
                         $('#pcard-0').popover('show');
                         $('#pcard-0 .popover').css('display', 'none').fadeIn();
                     }, 500);
@@ -516,7 +551,7 @@
             } else {
                 $(ele + ' div.card-' + i).attr('id', 'dcard-' + i);
 
-                if(hand.length < 2) {
+                if (hand.length < 2) {
                     $('#dcard-0').popover({
                         container: '#dcard-0',
                         content: dealer.getScore(),
@@ -525,7 +560,7 @@
                         trigger: 'manual'
                     });
 
-                    setTimeout(function() {
+                    setTimeout(function () {
                         $('#dcard-0').popover('show');
                         $('#dcard-0 .popover').fadeIn();
                     }, 100);
@@ -539,7 +574,7 @@
                 'right': posx
             }, speed);
 
-            $(ele).queue(function() {
+            $(ele).queue(function () {
                 $(this).animate({ 'left': '-=25.5px' }, 100);
                 $(this).dequeue();
             });
@@ -547,8 +582,8 @@
             cards = item;
         }
 
-        if(type === 'up' || item) {
-            if(suit !== '&#9829;' && suit !== '&#9670;') {
+        if (type === 'up' || item) {
+            if (suit !== '&#9829;' && suit !== '&#9670;') {
                 color = 'black';
             }
 
@@ -558,6 +593,7 @@
         }
     }
 
+    // Reset the game board
     function resetBoard() {
         $('#dhand').html('');
         $('#phand').html('');
@@ -565,53 +601,54 @@
         $('#phand, #dhand').css('left', 0);
     }
 
+    // Determine the winner and update the board accordingly
     function getWinner() {
-        var phand    = player.getHand(),
-                dhand    = dealer.getHand(),
-                pscore   = player.getScore(),
-                dscore   = dealer.getScore(),
-                wager    = player.getWager(),
-                winnings = 0,
-                result;
+        var phand = player.getHand(),
+            dhand = dealer.getHand(),
+            pscore = player.getScore(),
+            dscore = dealer.getScore(),
+            wager = player.getWager(),
+            winnings = 0,
+            result;
 
         running = false;
         setActions();
 
-        if(pscore > dscore) {
-            if(pscore === 21 && phand.length < 3) {
+        if (pscore > dscore) {
+            if (pscore === 21 && phand.length < 3) {
                 winnings = (wager * 2) + (wager / 2);
                 player.setCash(winnings);
                 player.setBank(winnings - wager);
                 $('#alert').removeClass('alert-info alert-error').addClass('alert-success');
                 result = 'Blackjack!';
-            } else if(pscore <= 21) {
+            } else if (pscore <= 21) {
                 winnings = wager * 2;
                 player.setCash(winnings);
                 player.setBank(winnings - wager);
                 $('#alert').removeClass('alert-info alert-error').addClass('alert-success');
                 result = 'You win!';
-            } else if(pscore > 21) {
+            } else if (pscore > 21) {
                 winnings -= wager;
                 player.setBank(winnings);
                 $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
                 result = 'Bust';
             }
-        } else if(pscore < dscore) {
-            if(pscore <= 21 && dscore > 21) {
+        } else if (pscore < dscore) {
+            if (pscore <= 21 && dscore > 21) {
                 winnings = wager * 2;
                 player.setCash(winnings);
                 player.setBank(winnings - wager);
                 $('#alert').removeClass('alert-info alert-error').addClass('alert-success');
                 result = 'You win - dealer bust!';
-            } else if(dscore <= 21) {
+            } else if (dscore <= 21) {
                 winnings -= wager;
                 player.setBank(winnings);
                 $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
                 result = 'You lose!';
             }
-        } else if(pscore === dscore) {
-            if(pscore <= 21) {
-                if(dscore === 21 && dhand.length < 3 && phand.length > 2) {
+        } else if (pscore === dscore) {
+            if (pscore <= 21) {
+                if (dscore === 21 && dhand.length < 3 && phand.length > 2) {
                     winnings -= wager;
                     player.setBank(winnings);
                     $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
@@ -635,9 +672,9 @@
         dealer.flipCards();
         dealer.updateBoard();
 
-        if(parseInt(player.getCash()) < 1) {
+        if (parseInt(player.getCash()) < 1) {
             $('#myModal').modal();
-            $('#newGame').on('click', function() {
+            $('#newGame').on('click', function () {
                 player.setCash(1000);
                 $(this).unbind('click');
                 $('#myModal').modal('hide');
@@ -645,55 +682,47 @@
         }
     }
 
+    // Event handlers for game buttons
+    $('#deal').on('click', function () {
+        var cash = parseInt(player.getCash());
 
-        $('#deal').on('click', function(){
-            var cash = parseInt(player.getCash());
+        $('#alert').fadeOut();
 
-            $('#alert').fadeOut();
-
-            if(cash > 0 && !running){
-                if($.trim($('#wager').val()) > 0){
-                    game.newGame();
-                }else{
-                    $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
-                    showAlert('The minimum bet is $1.')
-                }
-            }else{
-                $('#myModal').modal();
+        if (cash > 0 && !running) {
+            if ($.trim($('#wager').val()) > 0) {
+                game.newGame();
+            } else {
+                $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
+                showAlert('The minimum bet is $1.')
             }
-        });
+        } else {
+            $('#myModal').modal();
+        }
+    });
 
-        $('#hit').on('click', function(){
-            player.hit()
-        })
+    $('#hit').on('click', function () {
+        player.hit()
+    })
 
-        $('#stand').on('click', function(){
-            player.stand();
-        })
+    $('#stand').on('click', function () {
+        player.stand();
+    })
 
-        $('#double').on('click', function(){
-            player.dbl();
-        })
+    $('#double').on('click', function () {
+        player.dbl();
+    })
 
-        $('#split').on('click', function() {
-            player.split();
-        })
+    $('#split').on('click', function () {
+        player.split();
+    })
 
-        $('#insurance').on('click', function(){
-            player.insure();
-        })
+    $('#insurance').on('click', function () {
+        player.insure();
+    })
 
-        
-        $('#wager').numOnly();
-        $('#actions:not(#wager), #game , #myModal').disableSelection();
-        $('#newGame , #cancel').on('click', function(e){
-            e.preventDefault();
-        });
-        $('#cancel').on('click', function(){
-            $('#myModal').modal('hide');
-        })
-        $('#wager').val(100);
-        $('#cash span').html(player.getCash());
-        player.getBank();
-
-}());
+    // Initialize the game
+    player.updateBoard();
+    $('#wager').numOnly();
+    $('#cash').disableSelection();
+    $('#bank').disableSelection();
+})();
