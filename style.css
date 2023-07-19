@@ -6,47 +6,41 @@ body {
 }
 
 #wrapper {
-	margin: 0 auto;
-	max-width: 1000px;
+    margin: 0 auto;
+    max-width: 1000px;
 }
 
 h3 {
-	margin: 5px 0;
-	text-align: center;
+    margin: 5px 0;
+    text-align: center;
 }
 
 #game {
-	border-radius: 5px;
-	color: #333;
-	font: 14px/17px Helvetica, Arial, Verdana, sans-serif;
-	height: 100vh;
     width: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-	position: relative;
-	 
-}
-
- 
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 15px;
+    overflow-x: scroll; /* Change this line */
+    -webkit-overflow-scrolling: touch; /* Add this line for smoother scrolling on iOS devices */
+  }
 
 div#dscore {
-	position: absolute;
-	top: 10px;
+    position: absolute;
+    top: 10px;
 }
 
 div#pscore {
-	position: absolute;
-	bottom: 15px;
+    position: absolute;
+    bottom: 15px;
 }
 
-div#phand, div#dhand {
-	font-weight: 700;
-	/*left: 50%;*/
-	position: absolute;
-	top: -50px;
-	white-space: nowrap;
-	width: 1000px;
+div#phand,
+div#dhand {
+    font-weight: 700;
+    position: absolute;
+    top: -50px;
+    white-space: nowrap;
+    width: 1000px;
 }
 
 div#phand { }
@@ -54,57 +48,57 @@ div#phand { }
 div#dhand { }
 
 div[class*="card"] {
-	background: #FFF;
-	border: 6px solid #FFF;
-	border-radius: 5px;
-	box-shadow: 0 0 1px #000;
-	display: inline-block;
-	height: 106px;
-	margin: 0 5px;
-	position: absolute;
-	right: 0;
-	width: 79px;
+    background: #FFF;
+    border: 6px solid #FFF;
+    border-radius: 5px;
+    box-shadow: 0 0 1px #000;
+    display: inline-block;
+    height: 106px;
+    margin: 0 5px;
+    position: absolute;
+    right: 0;
+    width: 79px;
 }
 
 .down {
-	background: #B20000 url('https://www.clowerweb.com/cors/blackjack/card.png') center center no-repeat !important;
+    background: #B20000 url('https://www.clowerweb.com/cors/blackjack/card.png') center center no-repeat !important;
 }
 
 span.pos-0 {
-	left: 0;
-	position: absolute;
-	top: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
 }
 
 span.pos-1 {
-	bottom: 0;
-	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
-	position: absolute;
-	right: 0;
-	transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
+    bottom: 0;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+    position: absolute;
+    right: 0;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
 }
 
 span.rank {
-	font-size: 18px;
+    font-size: 18px;
 }
 
 span.suit {
-	font-size: 22px;
+    font-size: 22px;
 }
 
 .black {
-	color: #000;
+    color: #000;
 }
 
 .red {
-	color: #F00;
+    color: #F00;
 }
 
 #result {
-	position: absolute;
-	bottom: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 #actions {
@@ -117,44 +111,95 @@ span.suit {
     background-color: #000;
 }
 
-input#wager { margin-left: 5px; position: relative; top: 4px }
+input#wager {
+    margin-left: 5px;
+    position: relative;
+    top: 4px;
+}
 
-#money, #money:before {
-	border-radius: 5px;
-	top: 0;
-	height: 100px;
-	padding: 7px;
-	position: absolute;
-	right: 0;
-	width: 250px;
+#money,
+#money:before {
+    border-radius: 5px;
+    top: 0;
+    height: 100px;
+    padding: 7px;
+    position: absolute;
+    right: 0;
+    width: 250px;
     background-color: rgb(2, 48, 2);
 }
 
 #money {
-	border: 2px solid #FFC926;
+    border: 2px solid #FFC926;
 }
 
 #money:before {
-	background: #333;
-	content: '';
-	opacity: 0.8;
+    background: #333;
+    content: '';
+    opacity: 0.8;
 }
 
-	#cash, #bank {
-		color: #FFF;
-		font: 700 18px/20px Helvetica, Arial, Verdana, sans-serif;
-		margin: 12px 0;
-		position: relative;
-		text-shadow: 1px 1px #000;
-		z-index: 1;
-	}
+#cash,
+#bank {
+    color: #FFF;
+    font: 700 18px/20px Helvetica, Arial, Verdana, sans-serif;
+    margin: 12px 0;
+    position: relative;
+    text-shadow: 1px 1px #000;
+    z-index: 1;
+}
 
 #alert {
-	margin: 0 auto;
-	opacity: 0.95;
-	position: relative;
-	text-align: center;
-	top: 34.5%;
-	width: 500px;
-	z-index: 10;
+    margin: 0 auto;
+    opacity: 0.95;
+    position: relative;
+    text-align: center;
+    top: 34.5%;
+    width: 200px;
+    z-index: 10;
 }
+
+/* Default styles for #dhand and #phand */
+#phand,
+#dhand {
+  width: auto;
+  left: 50%;
+  transform: translateX(-23%); /* Add this line */
+  top: initial;
+  bottom: 10px;
+}
+
+/* Media query for small screen sizes */
+@media (max-width: 767px) {
+    #dhand,
+    #phand {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        top: initial;
+        bottom: 10px;
+    }
+
+    #dhand .card,
+    #phand .card {
+        margin: 0 auto;
+    }
+
+    #phand {
+        margin-bottom: 20px;
+    }
+
+    #dhand {
+        margin-top: 20px;
+    }
+
+    /* Adjust modal width */
+    #myModal .modal-body,
+    #myModal .modal-footer {
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
