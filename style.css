@@ -174,26 +174,32 @@ input#wager {
 
 /* Media query for small screen sizes */
 @media (max-width: 767px) {
-    #phand {
-        margin-top: 60px;
-        margin-left: 30px;
+    #dealer,
+    #player {
+      flex-direction: row; /* Keep the cards in rows on smaller screens */
     }
 
-    #dhand {
-        margin-top: -30px;
-        margin-left: -150px;
+    #phand {
+        margin-top: 80px;
+        margin-left: -185px;
     } 
+
+    #dhand {
+        margin-top: -45px;
+        margin-left: -50px;
+    } 
+
 
     div#phand,
     div#dhand {
-        width: 400px;
+        width: 100%;
+        /* transform: none; */
 }
 
-    #phand,
-    #dhand {
-        width: 100%;
-        transform: translateX(0); /* Change to 0 translation for smaller screens */
-    }
+#phand .card, #dhand .card {
+    position: relative;
+    float: left;
+}
 
     /* Adjust modal width */
     #myModal .modal-body,
@@ -206,6 +212,7 @@ input#wager {
     div[class*="card"] {
         width: 50px;
         margin: 0;
+        height: 80px;
     }
 
     div.popover.left.in {
