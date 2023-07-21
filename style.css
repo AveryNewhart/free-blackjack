@@ -7,7 +7,7 @@ body {
 
 #wrapper {
     margin: 0 auto;
-    max-width: 1000px;
+    width: 100%;
 }
 
 h3 {
@@ -17,7 +17,7 @@ h3 {
 
 #game {
     width: 100%;
-    max-width: 1000px;
+    /* max-width: 1000px; */
     margin: 0 auto;
     padding: 0 15px;
     overflow-x: scroll; /* Change this line */
@@ -36,11 +36,11 @@ div#pscore {
 
 div#phand,
 div#dhand {
-    font-weight: 700;
+    font-weight: 500;
     position: absolute;
     top: -50px;
     white-space: nowrap;
-    width: 1000px;
+    width: 950px;
 }
 
 div#phand { }
@@ -206,6 +206,19 @@ input#wager {
         max-width: 90%;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    div[class*="card"] {
+        /* background: #FFF;
+        border: 6px solid #FFF;
+        border-radius: 5px;
+        box-shadow: 0 0 1px #000;
+        display: inline-block;
+        height: 106px;
+        margin: 0 5px;
+        position: absolute;
+        right: 0; */
+        width: 50px;
     }
 }
 
