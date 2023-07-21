@@ -20,7 +20,7 @@ h3 {
     /* max-width: 1000px; */
     margin: 0 auto;
     padding: 0 15px;
-    overflow-x: scroll; /* Change this line */
+    overflow-x: hidden; /* Change this line */
     -webkit-overflow-scrolling: touch; /* Add this line for smoother scrolling on iOS devices */
   }
 
