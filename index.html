@@ -68,6 +68,23 @@
             </div>
         </div>
 
+        <script>
+            // Prevent viewport scaling when focusing on the input field
+            var viewportMetaTag = document.querySelector('meta[name="viewport"]');
+            var initialScale = 1.0;
+    
+            function preventZoom(event) {
+                viewportMetaTag.setAttribute('content', 'width=device-width, initial-scale=' + initialScale);
+                event.preventDefault();
+            }
+    
+            document.getElementById('wager').addEventListener('focus', function (event) {
+                viewportMetaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+            });
+    
+            document.getElementById('wager').addEventListener('blur', preventZoom);
+        </script>
+
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
