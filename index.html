@@ -71,13 +71,13 @@
         <script>
             // Function to handle focus on the wager input field
             function handleInputFocus() {
-                var gameContainer = document.querySelector('.container');
+                var gameContainer = document.querySelector('#game');
                 gameContainer.style.overflowX = 'hidden'; // Prevent horizontal scrolling
             }
     
             // Function to handle blur (loss of focus) on the wager input field
             function handleInputBlur() {
-                var gameContainer = document.querySelector('.container');
+                var gameContainer = document.querySelector('#game');
                 gameContainer.style.overflowX = 'scroll'; // Enable horizontal scrolling again
             }
     
