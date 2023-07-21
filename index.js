@@ -569,6 +569,12 @@
 
             $(ele + ' .card-' + i).css('z-index', i);
 
+            // Check for mobile screens and adjust card positioning
+            if ($(window).width() < 768) {
+                posx = (i > 0) ? 0 : 25;
+                posy = 220 + (i * 50);
+            }
+
             $(ele + ' .card-' + i).animate({
                 'top': posy,
                 'right': posx

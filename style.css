@@ -17,10 +17,9 @@ h3 {
 
 #game {
     width: 100%;
-    /* max-width: 1000px; */
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 15px;
-    overflow-x: hidden; /* Change this line */
     -webkit-overflow-scrolling: touch; /* Add this line for smoother scrolling on iOS devices */
   }
 
@@ -162,8 +161,7 @@ input#wager {
 #phand,
 #dhand {
   width: auto;
-  margin-left: 100px;
-  transform: translateX(-23%); /* Add this line */
+  transform: translateX(25%); /* Add this line */
   top: initial;
   bottom: 10px;
 }
@@ -176,28 +174,25 @@ input#wager {
 
 /* Media query for small screen sizes */
 @media (max-width: 767px) {
-    #dhand,
     #phand {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        width: 100%;
-        top: initial;
-        bottom: 10px;
-        margin-left: 0;
-    }
-
-    #dhand .card,
-    #phand .card {
-        margin: 0 auto;
-    }
-
-    #phand {
-        margin-bottom: 20px;
+        margin-top: 60px;
+        margin-left: 30px;
     }
 
     #dhand {
-        margin-top: 20px;
+        margin-top: -30px;
+        margin-left: -150px;
+    } 
+
+    div#phand,
+    div#dhand {
+        width: 400px;
+}
+
+    #phand,
+    #dhand {
+        width: 100%;
+        transform: translateX(0); /* Change to 0 translation for smaller screens */
     }
 
     /* Adjust modal width */
@@ -209,16 +204,12 @@ input#wager {
     }
 
     div[class*="card"] {
-        /* background: #FFF;
-        border: 6px solid #FFF;
-        border-radius: 5px;
-        box-shadow: 0 0 1px #000;
-        display: inline-block;
-        height: 106px;
-        margin: 0 5px;
-        position: absolute;
-        right: 0; */
         width: 50px;
+        margin: 0;
+    }
+
+    div.popover.left.in {
+        margin-left: 6px;
     }
 
 }
