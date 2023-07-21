@@ -220,5 +220,16 @@ input#wager {
         right: 0; */
         width: 50px;
     }
+
+    /* Prevent user zooming on mobile */
+    input#wager {
+        font-size: 16px; /* Adjust the font size to make it more clickable on mobile */
+        pointer-events: none; /* Disable pointer events on the input field */
+    }
+    
+    /* Re-enable pointer events on focus */
+    input#wager:focus {
+        pointer-events: auto;
+    }
 }
 
