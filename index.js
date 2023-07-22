@@ -453,9 +453,10 @@
     }
 
     // Set available actions based on game state
-    function setActions(opts) {
+    function setActions() {
         var hand = player.getHand();
-
+        var dhand = dealer.getHand();
+    
         if (!running) {
             $('#deal').prop('disabled', false);
             $('#hit').prop('disabled', true);
@@ -464,25 +465,63 @@
             $('#split').prop('disabled', true);
             $('#insurance').prop('disabled', true);
         }
-
-        if (opts === 'run') {
+    
+        if (running && hand.length >= 2) {
+            // Game is running, enable hit and stand
             $('#deal').prop('disabled', true);
             $('#hit').prop('disabled', false);
             $('#stand').prop('disabled', false);
-
-            if (player.checkWager(wager * 2)) {
+    
+            if (player.checkWager(player.getWager() * 2)) {
+                // If player has enough cash to double down, enable double
                 $('#double').prop('disabled', false);
             }
-        } else if (opts === 'split') {
-            $('#split').prop('disabled', false);
-        } else if (opts === 'insurance') {
-            $('#insurance').prop('disabled', false);
-        } else if (hand.length > 2) {
-            $('#double').prop('disabled', true);
-            $('#split').prop('disabled', true);
-            $('#insurance').prop('disabled', true);
+    
+            if (dhand.length === 2 && dhand[0].rank === 'A') {
+                // If dealer has an Ace, enable insurance
+                $('#insurance').prop('disabled', false);
+            }
+    
+            // Check if the player's two cards have the same rank (number) for enabling split
+            if (hand.length === 2 && hand[0].rank === hand[1].rank) {
+                $('#split').prop('disabled', false);
+            } else {
+                $('#split').prop('disabled', true);
+            }
         }
     }
+    
+
+    // function setActions(opts) {
+    //     var hand = player.getHand();
+
+    //     if (!running) {
+    //         $('#deal').prop('disabled', false);
+    //         $('#hit').prop('disabled', true);
+    //         $('#stand').prop('disabled', true);
+    //         $('#double').prop('disabled', true);
+    //         $('#split').prop('disabled', true);
+    //         $('#insurance').prop('disabled', true);
+    //     }
+
+    //     if (opts === 'run') {
+    //         $('#deal').prop('disabled', true);
+    //         $('#hit').prop('disabled', false);
+    //         $('#stand').prop('disabled', false);
+
+    //         if (player.checkWager(wager * 2)) {
+    //             $('#double').prop('disabled', false);
+    //         }
+    //     } else if (opts === 'split') {
+    //         $('#split').prop('disabled', false);
+    //     } else if (opts === 'insurance') {
+    //         $('#insurance').prop('disabled', false);
+    //     } else if (hand.length > 2) {
+    //         $('#double').prop('disabled', true);
+    //         $('#split').prop('disabled', true);
+    //         $('#insurance').prop('disabled', true);
+    //     }
+    // }
 
     // Show initial cards on the board
     function showBoard() {
@@ -697,6 +736,9 @@
         if (cash > 0 && !running) {
             if ($.trim($('#wager').val()) > 0) {
                 game.newGame();
+
+                 // Enable or disable buttons based on game state
+                setActions('run'); 
             } else {
                 $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
                 showAlert('The minimum bet is $1.')

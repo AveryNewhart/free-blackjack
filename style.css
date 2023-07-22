@@ -166,11 +166,31 @@ input#wager {
   bottom: 10px;
 }
 
-.myBtn {
+/* .myBtn {
     background-color: red;
     color: white;
     border-radius: 5px;
+} */
+
+/* Add a new class for the disabled buttons */
+.myBtn.disabled {
+    background-color: #888; /* Change this to the desired background color for disabled buttons */
+    cursor: not-allowed; /* Optionally, change the cursor to indicate the button is disabled */
 }
+
+/* Style for the enabled buttons */
+.myBtn:not(.disabled) {
+    background-color: red; /* Change this to the desired background color for enabled buttons */
+    color: white;
+    border-radius: 5px;
+}
+
+/* Optional: Add a hover effect for enabled buttons */
+.myBtn:not(.disabled):hover {
+    background-color: #cc0000; /* Change this to the desired hover background color for enabled buttons */
+    cursor: pointer;
+}
+
 
 /* Media query for small screen sizes */
 @media (max-width: 767px) {
