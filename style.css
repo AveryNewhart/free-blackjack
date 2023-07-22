@@ -247,5 +247,15 @@ input#wager {
         margin-left: 6px;
     }
 
+    #money {
+    position: absolute;
+    right: 35px;
+    }
+
+    #actions {
+        position: absolute;
+        right: 30px;
+    }
+
 }
 
