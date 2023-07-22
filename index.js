@@ -15,7 +15,8 @@
             cash = 1000,
             bank = 0,
             ele = '',
-            score = '';
+            score = '',
+            splitHands = [];
 
         // Get HTML elements for player or dealer
         this.getElements = function () {
@@ -67,6 +68,32 @@
         // Get player's cash
         this.getCash = function () {
             return cash.formatMoney(2, '.', ',');
+        };
+
+        this.splitHand = function () {
+            if (hand.length === 2 && hand[0].rank === hand[1].rank) {
+                // Check if the player has two cards of the same rank
+    
+                // Move the second card to a new split hand
+                splitHands.push([hand.pop()]);
+    
+                // Deal a new card to each hand
+                deal.setCard(this);
+                deal.setCard(splitHands[0], true);
+    
+                // Enable/disable buttons as needed
+                setActions();
+    
+                // Render the updated hands
+                renderCard(ele, this, 'up');
+                renderCard('#split-1', this, 'up', splitHands[0]);
+            }
+        };
+
+        // Reset player's hand and splitHands
+        this.resetHand = function () {
+            hand = [];
+            splitHands = [];
         };
 
         // Set player's cash
@@ -196,6 +223,8 @@
             shuffled = shuffle.getShuffle(),
             card;
 
+        var currentPlayer;
+
         // Get a card from the shuffled deck
         this.getCard = function (sender) {
             this.setCard(sender);
@@ -203,10 +232,16 @@
         };
 
         // Set a card to the player's or dealer's hand
-        this.setCard = function (sender) {
+        this.setCard = function (sender, split) {
             card = shuffled[0];
             shuffled.splice(card, 1);
-            sender.setHand(card);
+            // sender.setHand(card);
+
+            if (!split) {
+                sender.setHand(card); // Deal to the main hand
+            } else {
+                sender.push(card); // Deal to the split hand
+            }
         };
 
         // Deal cards to players and dealer
@@ -228,6 +263,11 @@
                 renderCard(ele, sender, 'down');
             }
 
+            if (player.getHand().length === 2 && player.getHand()[0].rank === player.getHand()[1].rank) {
+                // Check if the player has two cards of the same rank to enable the split button
+                setActions('run');
+            }
+
             if (player.getHand().length < 3) {
                 if (dhand.length > 0 && dhand[0].rank === 'A') {
                     setActions('insurance');
@@ -247,6 +287,7 @@
                     }
                 }
             }
+
 
             function showCards() {
                 setTimeout(function () {
@@ -491,38 +532,6 @@
         }
     }
     
-
-    // function setActions(opts) {
-    //     var hand = player.getHand();
-
-    //     if (!running) {
-    //         $('#deal').prop('disabled', false);
-    //         $('#hit').prop('disabled', true);
-    //         $('#stand').prop('disabled', true);
-    //         $('#double').prop('disabled', true);
-    //         $('#split').prop('disabled', true);
-    //         $('#insurance').prop('disabled', true);
-    //     }
-
-    //     if (opts === 'run') {
-    //         $('#deal').prop('disabled', true);
-    //         $('#hit').prop('disabled', false);
-    //         $('#stand').prop('disabled', false);
-
-    //         if (player.checkWager(wager * 2)) {
-    //             $('#double').prop('disabled', false);
-    //         }
-    //     } else if (opts === 'split') {
-    //         $('#split').prop('disabled', false);
-    //     } else if (opts === 'insurance') {
-    //         $('#insurance').prop('disabled', false);
-    //     } else if (hand.length > 2) {
-    //         $('#double').prop('disabled', true);
-    //         $('#split').prop('disabled', true);
-    //         $('#insurance').prop('disabled', true);
-    //     }
-    // }
-
     // Show initial cards on the board
     function showBoard() {
         deal.dealCard(4, 0, [player, dealer, player, dealer]);
@@ -761,7 +770,7 @@
     })
 
     $('#split').on('click', function () {
-        player.split();
+        player.splitHand();
     })
 
     $('#insurance').on('click', function () {
