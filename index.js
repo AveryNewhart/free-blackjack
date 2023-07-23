@@ -13,144 +13,178 @@
     // Set currentPlayer to the player object
     currentPlayer = player;
 
-    // Player constructor
-    function Player(deck) {
-        var hand = [],
-        wager = 0,
-        cash = 1000,
-        bank = 0,
-        ele = '',
-        score = '',
-        // splitHands = [],
-        hands = [];
 
+/**************************************************************************/
+/************************** Player Constructor ****************************/
+/**************************************************************************/
+    function Player(deck) {
+
+    this.hand = []; 
+    this.wager = 0;
+    this.cash = 1000;
+    this.bank = 0;
+    this.ele = '';
+    this.score = '';
+    this.hands = [];
     this.splitHands = [];
 
     // Get player's hand
     this.getHand = function () {
-        return hand;
+        return this.hand;
     };
 
     // Set a card to player's hand
     this.setHand = function (card) {
-        hand.push(card);
+        this.hand.push(card);
     };
 
     // Reset player's hand
     this.resetHand = function () {
-        hand = [];
-        hands = [];
+        this.hand = [];
+        this.splitHands = [];
     };
 
     // Get player's wager
     this.getWager = function () {
-        return wager;
+        return this.wager;
     };
+
+    // // Set player's wager
+    // this.setWager = function (money) {
+    //     wager += parseInt(money, 0);
+    // };
 
     // Set player's wager
     this.setWager = function (money) {
-        wager += parseInt(money, 0);
+        // Convert the input money to an integer
+        money = parseInt(money, 10);
+
+    // Check if the player has enough cash to place the wager
+    if (money <= this.cash) {
+        // If yes, update the wager amount
+        this.wager += money;
+        } else {
+            // If no, you can either show an error message or handle it as per your application's requirements
+            console.log("Insufficient cash to place the wager.");
+            // Alternatively, you can throw an error or take appropriate action.
+        }
     };
+
 
     // Reset player's wager
     this.resetWager = function () {
-        wager = 0;
+        this.wager = 0;
     };
 
     // Check if player's wager is valid
     this.checkWager = function () {
-        return wager <= cash ? true : false;
+        return this.wager <= this.cash ? true : false;
     };
 
     // Get player's cash
     this.getCash = function () {
-        return cash.formatMoney(2, '.', ',');
+        return this.cash.formatMoney(2, '.', ',');
     };
 
     // Set a card to player's hand
     this.addCard = function (card) {
-        hand.push(card);
+        this.hand.push(card);
     };
 
-        // Function to render hands on the UI
-        this.renderHands = function () {
-            var i, j, hand;
 
-            // Clear the existing hands on the UI
-            $('#phand, #phand > div').html('');
+    // Get HTML elements for player or dealer (defined as a prototype method)
+    this.getElements = function () {
+        var ele, score;
+                
+        if (this === player) {
+            ele = '#phand';
+            score = '#pcard-0 .popover-content';
+        } else if (this === dealer) {
+            ele = '#dhand';
+            score = '#dcard-0 .popover-content';
+        }
+        return { 'ele': ele, 'score': score };
+    };
 
-            // Loop through the player's hands
-            for (i = 0; i < this.splitHands.length; i++) {
-                hand = this.splitHands[i].getHand();
-
-                // Loop through the cards in the hand and render them on the UI
-                for (j = 0; j < hand.length; j++) {
-                    renderCard('#phand', this.splitHands[i], 'up', 'card-' + i + '-' + j);
+    this.renderHands = function () {
+        var i, j, hand;
+    
+        // Clear the existing hands on the UI
+        $('#phand, #phand > div').html('');
+    
+        // Render the main hand cards
+        for (j = 0; j < hand.length; j++) {
+            renderCard('#phand', this, 'up', 'card-0-' + j);
+        }
+    
+        // Loop through the player's split hands and render their cards
+        for (i = 0; i < this.splitHands.length; i++) {
+            hand = this.splitHands[i].getHand();
+    
+            for (j = 0; j < hand.length; j++) {
+                renderCard('#phand', this.splitHands[i], 'up', 'card-' + (i + 1) + '-' + j);
             }
         }
-
+    
         // Show the score for the main hand
         $('#pcard-0 .popover-content').html(this.getScore());
     };
 
-        this.splitHand = function () {
-            if (this.getHand().length === 2 && this.getHand()[0].rank === this.getHand()[1].rank) {
-                var splitCard = this.getHand().pop(); // Remove one card from the original hand
-                var newHand = new Player(deck); // Create a new Player instance to represent the split hand
-        
-                // Move the split card to the new hand
-                newHand.setHand([splitCard]);
-        
-                // // Add the new hand to the currentPlayer's hands array
-                // currentPlayer.hands.push(newHand); // Initialize the hands property as an empty array
-
-                // Add the new hand to the player's splitHands array
-                this.splitHands.push(newHand);
-        
-                // Add a new card to each hand
-                this.setHand(deal.getCard(this));
-                newHand.setHand(deal.getCard(newHand));
-        
-                // Render the updated hands on the UI
-                this.renderHands();
-        
-                // Disable split button if the maximum number of hands is reached
-                if (this.splitHands.length >= 4) {
-                    $('#split').prop('disabled', true);
-                }
-        
-                // Deal cards to each hand
-                deal.dealCard.bind(deal, 2, 0, this.splitHands)();
+    this.splitHand = function () {
+        if (this.getHand().length === 2 && this.getHand()[0].rank === this.getHand()[1].rank) {
+            var splitCard = this.getHand().pop(); // Remove one card from the original hand
+            var newHand = new Player(deck); // Create a new Player instance to represent the split hand
+    
+            // Move the split card to the new hand
+            newHand.setHand(splitCard);
+    
+            // Add the new hand to the player's splitHands array
+            this.splitHands.push(newHand);
+    
+            // Add a new card to each hand
+            this.setHand(deal.getCard(this));
+            newHand.setHand(deal.getCard(newHand));
+    
+            // Render the updated hands on the UI
+            this.renderHands();
+    
+            // Disable split button if the maximum number of hands is reached
+            if (this.splitHands.length >= 4) {
+                $('#split').prop('disabled', true);
             }
-        };
+    
+            // Deal cards to each hand
+            deal.dealCard(2, 0, [this].concat(this.splitHands));
+        }
+    };
         
-
-        // Reset player's hand and splitHands
-        this.resetHand = function () {
-            hand = [];
-            splitHands = [];
-        };
-
         // Set player's cash
         this.setCash = function (money) {
-            cash += money;
+            this.cash += money;
             this.updateBoard();
         };
 
         // Get player's bank (winnings)
         this.getBank = function () {
-            $('#bank').html('Winnings: $' + bank.formatMoney(2, '.', ','));
+            $('#bank').html('Winnings: $' + this.bank.formatMoney(2, '.', ','));
 
-            if (bank < 0) {
+            if (this.bank < 0) {
                 $('#bank').html('Winnings: <span style="color: #D90000">-$' +
-                    bank.formatMoney(2, '.', ',').toString().replace('-', '') + '</span>');
+                    this.bank.formatMoney(2, '.', ',').toString().replace('-', '') + '</span>');
             }
         };
 
         // Set player's bank (winnings)
         this.setBank = function (money) {
-            bank += money;
+            this.bank += money;
             this.updateBoard();
+        };
+
+        this.updateBoard = function () {
+            var scoreElement = this.getElements().score;
+                $(scoreElement).html(this.getScore());
+                $('#cash span').html(this.getCash());
+        this.getBank();
         };
 
         // Flip dealer's facedown cards
@@ -164,7 +198,9 @@
         };
     }
 
-    // Deck constructor
+/************************************************************************/
+/************************** Deck Constructor ****************************/
+/************************************************************************/
     function Deck() {
         var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
             suits = ['&#9824;', '&#9827;', '&#9829;', '&#9670;'],
@@ -194,7 +230,9 @@
         };
     }
 
-    // Shuffle constructor
+/***************************************************************************/
+/************************** Shuffle Constructor ****************************/
+/***************************************************************************/
     function Shuffle(deck) {
         var set = deck.getDeck(),
             shuffled = [],
@@ -218,7 +256,9 @@
         };
     }
 
-    // Card constructor
+/************************************************************************/
+/************************** Card Constructor ****************************/
+/************************************************************************/
     function Card(card) {
         // Get the rank of the card
         this.getRank = function () {
@@ -251,14 +291,18 @@
         };
     }
 
-    // Deal constructor
+/************************************************************************/
+/************************** Deal Constructor ****************************/
+/************************************************************************/
     function Deal(deck) {
         var deck = new Deck(),
             shuffle = new Shuffle(deck),
             shuffled = shuffle.getShuffle(),
             card;
+        
+        this.deck = deck;
 
-        // var currentPlayer;
+        // deal = new Deal(deck);
 
         // Get a card from the shuffled deck
         this.getCard = function (sender) {
@@ -284,13 +328,30 @@
         this.dealCard = function (num, i, obj) {
             if (i >= num) { return false; }
 
-            var sender = obj[i],
-                elements = obj[i].getElements(),
-                score = elements.score,
-                ele = elements.ele,
-                dhand = dealer.getHand();
+            var sender = obj[i];
 
-            deal.getCard(sender);
+            if (sender.splitHands.length > 0) {
+                // Deal cards to each split hand
+                for (var j = 0; j < sender.splitHands.length; j++) {
+                    var splitHand = sender.splitHands[j];
+                    var splitElements = splitHand.getElements();
+                    var splitScore = splitElements.score;
+                    var splitEle = splitElements.ele;
+        
+                    this.deck.setCard(splitHand, true);
+        
+                    renderCard(splitEle, splitHand, 'up');
+                    $(splitScore).html(splitHand.getScore());
+                }
+            }
+        
+            // Deal cards to the main hand or the player/dealer if no split hands
+            var elements = sender.getElements();
+            var score = elements.score;
+            var ele = elements.ele;
+            var dhand = dealer.getHand();
+
+            deal.getCard(sender, false);
 
             if (i < 3) {
                 renderCard(ele, sender, 'up');
@@ -298,6 +359,11 @@
             } else {
                 renderCard(ele, sender, 'down');
             }
+
+            // Update player's score display
+            $('#pcard-0 .popover-content span').html(player.getScore());
+            // Update dealer's score display
+            $('#dcard-0 .popover-content span').html(dealer.getScore());
 
             if (player.getHand().length === 2 && player.getHand()[0].rank === player.getHand()[1].rank) {
                 // Check if the player has two cards of the same rank to enable the split button
@@ -323,20 +389,17 @@
                     }
                 }
             }
-
-
-            function showCards() {
-                setTimeout(function () {
-                    deal.dealCard(num, i + 1, obj);
-                }, 500);
-            }
             
-
-            clearTimeout(showCards());
+            // setTimeout(showCards, 250);
+            setTimeout(function () {
+                deal.dealCard(num, i + 1, obj);
+            }, 250);
         };
     }
 
-    // Game constructor
+/************************************************************************/
+/************************** Game Constructor ****************************/
+/************************************************************************/
     function Game() {
         // Start a new game
         this.newGame = function () {
@@ -366,9 +429,9 @@
         };
     }
 
-    /*****************************************************************/
-    /************************* Extensions ****************************/
-    /*****************************************************************/
+    /******************************************************************************/
+    /************************* Extensions / Prototypes ****************************/
+    /******************************************************************************/
 
     // Prototype functions for Player
     Player.prototype.hit = function (dbl) {
@@ -431,10 +494,39 @@
         }
     };
 
-    Player.prototype.split = function () {
-        $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
-        showAlert('Split function is not yet working.');
+    // Player.prototype.split = function () {
+    //     $('#alert').removeClass('alert-info alert-success').addClass('alert-error');
+    //     showAlert('Split function is not yet working.');
+    // };
+
+    Player.prototype.splitHand = function () {
+        if (this.getHand().length === 2 && this.getHand()[0].rank === this.getHand()[1].rank) {
+            var splitCard = this.getHand().pop(); // Remove one card from the original hand
+            var newHand = new Player(deck); // Create a new Player instance to represent the split hand
+    
+            // Move the split card to the new hand
+            newHand.setHand(splitCard);
+    
+            // Add the new hand to the player's splitHands array
+            this.splitHands.push(newHand);
+    
+            // Add a new card to each hand
+            this.setHand(deal.getCard(this));
+            newHand.setHand(deal.getCard(newHand));
+    
+            // Render the updated hands on the UI
+            this.renderHands();
+    
+            // Disable split button if the maximum number of hands is reached
+            if (this.splitHands.length >= 4) {
+                $('#split').prop('disabled', true);
+            }
+    
+            // Deal cards to each hand
+            deal.dealCard(2, 0, [this].concat(this.splitHands));
+        }
     };
+    
 
     Player.prototype.insure = function () {
         var wager = this.getWager() / 2,
@@ -824,6 +916,10 @@
     $('#split').on('click', function () {
         player.splitHand();
     })
+
+    // $('#split').on('click', function () {
+    //     currentPlayer.splitHand(); // Use currentPlayer instead of player to handle split for both player and split hands
+    // });
 
     $('#insurance').on('click', function () {
         player.insure();
