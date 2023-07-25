@@ -49,11 +49,6 @@
         return this.wager;
     };
 
-    // // Set player's wager
-    // this.setWager = function (money) {
-    //     wager += parseInt(money, 0);
-    // };
-
     // Set player's wager
     this.setWager = function (money) {
         // Convert the input money to an integer
@@ -113,6 +108,7 @@
         $('#phand, #phand > div').html('');
     
         // Render the main hand cards
+        hand = this.getHand(); // Get the current hand of the player
         for (j = 0; j < hand.length; j++) {
             renderCard('#phand', this, 'up', 'card-0-' + j);
         }
@@ -299,10 +295,7 @@
             shuffle = new Shuffle(deck),
             shuffled = shuffle.getShuffle(),
             card;
-        
-        this.deck = deck;
 
-        // deal = new Deal(deck);
 
         // Get a card from the shuffled deck
         this.getCard = function (sender) {
@@ -338,7 +331,7 @@
                     var splitScore = splitElements.score;
                     var splitEle = splitElements.ele;
         
-                    this.deck.setCard(splitHand, true);
+                    this.setCard(splitHand, true);
         
                     renderCard(splitEle, splitHand, 'up');
                     $(splitScore).html(splitHand.getScore());
@@ -413,7 +406,8 @@
                 resetBoard();
                 player.setCash(-wager);
 
-                deal = new Deal();
+                deal = new Deal(deck);
+
                 running = true;
                 blackjack = false;
                 insured = false;
